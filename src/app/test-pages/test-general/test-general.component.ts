@@ -21,7 +21,7 @@ export class TestPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.linqAverage = [1, 2, 3, 4].average(); //testing linq
-    this.valuesService.valuesSubjectsGet().subscribe(
+    this.valuesService.valuesProductsGet().subscribe(
       {
         next: x => this.okStatus = x,
         error: err => this.okStatus.error = err.message,

@@ -1,12 +1,15 @@
-import { Signal } from '@angular/core';
-import { toSignal, toObservable } from '@angular/core/rxjs-interop';
-import { Observable, switchMap } from 'rxjs';
+import { effect, signal, Signal } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 
-export function computedAsync<T, U>(sig: Signal<T>, fct: (p: T) => Observable<U>): Signal<U | undefined> {
-  return toSignal(
-    toObservable(sig)
-      .pipe(
-        switchMap(x => fct(x))
-      )
-  )
+export function computedAsync<T>(fct: () => Observable<T>): Signal<T | null> {
+  const sig = signal<T | null>(null);
+  let subscription: Subscription;
+
+  effect(() => {
+    sig.set(null);
+    if (subscription && !subscription.closed) subscription.unsubscribe(); //unsubscribe if open
+    subscription = fct().subscribe(x => sig.set(x));
+  }, { allowSignalWrites: true });
+
+  return sig;
 }

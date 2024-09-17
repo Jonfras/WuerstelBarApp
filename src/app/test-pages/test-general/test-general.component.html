@@ -1,5 +1,5 @@
 <h2>General test page</h2>
-<h5><i>v18.3.0 [2024-08-12]</i></h5>
+<h5><i>v18.4.0 [2024-09-17]</i></h5>
 <div class="mt-4 p-2 bg-primary text-white rounded">
   <h3>Testing swagger (Backend must be started!)</h3>
   <span class="block-span">
@@ -44,13 +44,6 @@
     Test linq.polyfill.ts - this value should be {{linqAverageExpected}}:
     <span class="badge" [style.background-color]="linqAverage===linqAverageExpected?'green':'red'">
       {{linqAverage}}</span>
-  </div>
-
-  <div>
-    <label for="txtSignalTest">Test ngSignal directive:</label>
-    <input id="txtSignalTest" [ngSignal]="myStr" ngSignalLog="myStr" />
-    <button class="btn btn-primary" (click)="myStr.set('xxyyzz')">Set value to signal</button>
-    myStr = {{myStr()}}
   </div>
 
 </div>

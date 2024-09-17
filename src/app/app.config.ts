@@ -18,4 +18,4 @@ export const appConfig: ApplicationConfig = {
   ]
 };
 
-console.log('Based on Angular18 Template v18.2.0 [2024-09-06]');
+console.log('Based on Angular18 Template v18.1.0 [2024-08-24]');

@@ -13,3 +13,16 @@ export function computedAsync<T>(fct: () => Observable<T>): Signal<T | null> {
 
   return sig;
 }
+
+export function computedAsyncWithDefault<T>(fct: () => Observable<T>, initialValue: T): Signal<T> {
+  const sig = signal<T>(initialValue);
+  let subscription: Subscription;
+
+  effect(() => {
+    sig.set(initialValue);
+    if (subscription && !subscription.closed) subscription.unsubscribe(); //unsubscribe if open
+    subscription = fct().subscribe(x => sig.set(x));
+  }, { allowSignalWrites: true });
+
+  return sig;
+}

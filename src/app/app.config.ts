@@ -6,10 +6,11 @@ import { BASE_PATH } from './swagger';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { version, versionDateString } from './shared/version';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withFetch()),
     { provide: BASE_PATH, useValue: environment.apiRoot },
@@ -17,4 +18,4 @@ export const appConfig: ApplicationConfig = {
   ]
 };
 
-console.log('Based on Angular18 Template v18.5.4 [2024-11-07]');
+console.log(`Based on Angular18 Template v${{ version }} [${versionDateString}]`);

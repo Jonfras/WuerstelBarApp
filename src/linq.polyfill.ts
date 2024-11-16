@@ -1,9 +1,9 @@
 import 'zone.js/plugins/zone'; //Zone JS is required by default for Angular itself.
 /**************************************************************
  Author:          DI Robert Grüneis/HTL Grieskirchen
- Version:         2.1.4
- Date:            2024-04-30
- Angular version: 17
+ Version:         2.2.1
+ Date:            2024-11-16
+ Angular version: 18
  **************************************************************
  * Note! Dont' forget to add the following:
  * - Add "src/linq.polyfill.ts" to "files" in tsconfig.app.json (ca. line 8):   
@@ -11,7 +11,7 @@ import 'zone.js/plugins/zone'; //Zone JS is required by default for Angular itse
  * - Add "src/linq.polyfill.ts" to architect-->build-->options-->polyfills in angular.json (ca. line 49)):
  *     --> "polyfills": [ "zone.js", "src/linq.polyfill.ts" ]
  **************************************************************/
-console.log('using linq.polyfill v2.1.3 [2023-11-19]');
+console.log('using linq.polyfill v2.2.1 [2024-11-16]');
 /***************************************************************************************************
  * Array function prototypes
  ***************************************************************************************************/
@@ -94,8 +94,8 @@ Array.prototype.first = function(fct) {
 };
 
 Array.prototype.firstOrDefault = function(fct) {
-  if (this.length === 0) return null;
-  return fct ? fct(this[0]) : this[0];
+  const filtered = fct ? this.filter(fct) : this;
+  return filtered.length === 0 ? null : filtered[0];
 };
 
 Array.prototype.groupBy = function(keySelector, valueSelector) {

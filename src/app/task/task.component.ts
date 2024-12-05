@@ -11,12 +11,4 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class TaskComponent {
   task = input.required<Task>();
-  edit = output<Task>();
-  taskDragged = output<Task>();
-  taskDropped = output<Task>();
-
-  dragged(task: Task) {
-    console.log(`task --> dragged: ${task.title}`)
-    this.taskDragged.emit(task)
-  }
 }

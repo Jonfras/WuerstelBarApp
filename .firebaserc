@@ -1,6 +1,7 @@
 {
   "projects": {
-    "kanban": "fir-demo-9327e"
+    "kanban": "fir-demo-9327e",
+    "default": "fir-demo-9327e"
   },
   "targets": {},
   "etags": {}

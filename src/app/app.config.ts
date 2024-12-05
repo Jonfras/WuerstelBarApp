@@ -21,17 +21,7 @@ export const appConfig: ApplicationConfig = {
     { provide: BASE_PATH, useValue: environment.apiRoot },
     provideAnimations(),
     provideAnimationsAsync(),
-    provideFirebaseApp(() =>
-      initializeApp({
-        projectId: 'fir-demo-9327e',
-        appId: '1:560572989170:web:476a7e61b14503a1c61a6b',
-        storageBucket: 'fir-demo-9327e.firebasestorage.app',
-        apiKey: 'AIzaSyBj7JNt2Mv68ItGqnQXgK5I0RFvcklzteI',
-        authDomain: 'fir-demo-9327e.firebaseapp.com',
-        messagingSenderId: '560572989170',
-        measurementId: 'G-MP9JS8CWPG',
-      })
-    ),
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),

@@ -17,11 +17,6 @@ export class LaneComponent {
   lane = input.required<Lane>();
 
   startDragging(task: Task) {
-    console.log(`dragging element: ${task.title}`)
     this.draggedElement.set(task);
-  }
-
-  onEditTask($event: Task) {
-    throw new Error('Method not implemented.');
   }
 }

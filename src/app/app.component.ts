@@ -1,18 +1,13 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { Task } from './task/task';
 import { Lane } from './lane/lane';
-import { Firestore } from '@angular/fire/firestore';
-import { AngularFireModule} from '@angular/fire/compat'
+import { doc, Firestore, updateDoc } from '@angular/fire/firestore';
+import { AngularFireModule } from '@angular/fire/compat';
 
-import { environment } from '../environments/environment';
-import { initializeApp } from '@angular/fire/app';
 import { LaneComponent } from './lane/lane.component';
-import { appConfig } from './app.config';
-// import { toSignal } from '@angular/core/rxjs-interop';
-// import { FormsModule } from '@angular/forms';
-
+import { onSnapshot } from '@firebase/firestore';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -20,14 +15,27 @@ import { appConfig } from './app.config';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
-
+export class AppComponent implements OnInit, OnDestroy {
+  firestore = inject(Firestore);
   tasks = signal<Task[]>([]);
   lanes = signal<Lane[]>([]);
   currentLane = signal<Lane | undefined>(undefined);
   draggedElement = signal<Task | undefined>(undefined);
+  unsubscribe: any;
 
   ngOnInit(): void {
+    this.unsubscribe = onSnapshot(
+      doc(this.firestore, 'kanbanFire/lanes'),
+      (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          this.lanes.set(data['lanes']);
+        } else {
+          console.warn('Document does not exist');
+        }
+      }
+    );
+
     this.tasks.set([
       { id: '1', title: 'Task 1', description: 'Description for Task 1' },
       { id: '2', title: 'Task 2', description: 'Description for Task 2' },
@@ -43,9 +51,8 @@ export class AppComponent implements OnInit {
     ]);
   }
 
-  constructor() {
-    effect(() => console.log(this.tasks()));
-    effect(() => console.log(`appComponent: ${this.draggedElement()?.title}`));
+  ngOnDestroy(): void {
+    this.unsubscribe();
   }
 
   taskEdited(editedTask: Task) {
@@ -53,15 +60,12 @@ export class AppComponent implements OnInit {
   }
 
   overLane(lane: Lane) {
-    console.log(`lane over: ${lane.title}`);
     this.currentLane.set(lane);
   }
 
   resetLane() {
-    console.log(`resetLane`);
     this.currentLane.set(undefined);
   }
-  startDragging() {}
 
   drop() {
     if (this.currentLane() === undefined) return;
@@ -78,6 +82,13 @@ export class AppComponent implements OnInit {
       oldValues[laneToEdit.id].tasks.push(this.draggedElement()!);
       return oldValues;
     });
+
+    this.writeDatabase();
     this.draggedElement.set(undefined);
+  }
+
+  writeDatabase() {
+    const docRef = doc(this.firestore, 'kanbanFire/lanes');
+    return updateDoc(docRef, { lanes: this.lanes() });
   }
 }

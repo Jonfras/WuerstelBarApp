@@ -1,0 +1,15 @@
+<div class="lane">
+  <h2>{{ title() }}</h2>
+  @for (task of tasks(); track $index) {
+  <div draggable="false"
+    [id]="task.id"
+    (mousedown)="startDragging(task)"
+  >
+    <app-task
+      [task]="task"
+      (edit)="onEditTask($event)"
+    ></app-task>
+  </div>
+  <div style="height: 30px"></div>
+  }
+</div>

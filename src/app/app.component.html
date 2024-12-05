@@ -1,5 +1,15 @@
-<h1>Angular18</h1>
-
-<hr />
-<router-outlet></router-outlet>
-<hr />
+<mat-toolbar color="primary">
+  <span>Kanban Fire</span>
+</mat-toolbar>
+<div class="container">
+  @for (lane of lanes(); track $index) {
+  <div class="item" (mouseover)="overLane(lane)" (mouseleave)="resetLane()" (mouseup)="drop()">
+    <app-lane
+      [(tasks)]="lane.tasks"
+      [title]="lane.title"
+      [lane]="lane"
+      [(draggedElement)]="draggedElement"
+    ></app-lane>
+  </div>
+  }
+</div>

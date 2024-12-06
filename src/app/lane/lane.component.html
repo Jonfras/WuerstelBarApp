@@ -1,7 +1,9 @@
 <div class="lane">
   <h2>{{ title() }}</h2>
   @for (task of tasks(); track $index) {
-  <div draggable="false"
+    <!-- style="user-select: none;" -->
+  <div 
+
     [id]="task.id"
     (mousedown)="startDragging(task)"
   >

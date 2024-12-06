@@ -1,0 +1,29 @@
+input {
+
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 95vh;
+    padding-top: 400px;
+    width: 300px;
+}
+
+.group {
+    display: flex;
+    margin-top: 50px;
+    gap: 5px;
+}
+
+button{
+    width: 100%;
+}
+
+.row{
+    display: flex;
+}
+
+.errorMessage{
+    color: red;
+}

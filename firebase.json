@@ -19,5 +19,20 @@
   },
   "database": {
     "rules": "database.rules.json"
+  },
+  "emulators": {
+    "firestore": {
+      "host": "localhost",
+      "port": "33000"
+    },
+    "auth": {
+      "host": "localhost",
+      "port": "31000"
+    },
+    "database": {
+      "host": "localhost",
+      "port": "32000"
+    }
+
   }
 }

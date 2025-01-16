@@ -21,6 +21,10 @@ export class LoginService {
     })
   }
 
+  resetMessage() {
+    this.errorMessage.set('');
+  }
+
   login(email:string, password:string)  {
     try {
       signInWithEmailAndPassword(this.authService, email, password)

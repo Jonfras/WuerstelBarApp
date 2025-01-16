@@ -16,9 +16,13 @@ export class LoginComponent {
   email = signal('');
   password = signal('');
 
-
   constructor() {
-    effect(() => this.loginService.loggedInUser() !== undefined ? this.redirect() : console.log('not logged in'));
+    effect(() =>
+      this.loginService.loggedInUser() !== undefined
+        ? this.redirect()
+        : console.log('not logged in')
+    );
+    this.loginService.resetMessage();
   }
 
   register() {
@@ -26,10 +30,10 @@ export class LoginComponent {
   }
 
   login() {
+    this.loginService.resetMessage();
     this.loginService.login(this.email(), this.password());
   }
 
-  
   redirect() {
     this.router.navigateByUrl('/home');
   }

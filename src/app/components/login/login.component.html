@@ -3,13 +3,13 @@
         <label for="email-input">Email:</label>
         <input id="email-input" type="text" [(ngModel)]="email">
     </div>
-    <div class="row">
+    <div class="row" style="margin-bottom: 10px;">
         <label for="password-input">Password:</label>
         <input id="password-input" type="password"  [(ngModel)]="password">   
     </div>
-     <div class="group">
-        <button type="button" (click)="login()">Login</button>
-        <button type="button" (click)="register()">Registrieren</button>
+     <div style="display: flex; justify-content: center;" class="group">
+        <button class="btn btn-light" type="button" (click)="login()">Login</button>
+        <!-- <button type="button" (click)="register()">Registrieren</button> -->
     </div>
 </div>
 <div class="errorMessage">

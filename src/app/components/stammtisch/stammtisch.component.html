@@ -1,44 +1,56 @@
-<button (click)="navigateTo()">Back</button>
+<button class="btn btn-secondary" style="margin-right: 10px;" (click)="navigateTo()">Back</button>
 @if (!isPersonParticipant()) {
-    <button type="button" class="btn btn-success" (click)="addParticipantToCurrentStammtisch()">Anmelden</button>
+<button
+  type="button"
+  class="btn btn-success"
+  (click)="addParticipantToCurrentStammtisch()"
+>
+  Anmelden
+</button>
 
 } @else {
-    <button type="button" class="btn btn-danger" (click)="removeParticipantFromStammtisch()">Abmelden</button>
+<button
+  type="button"
+  class="btn btn-danger"
+  (click)="removeParticipantFromStammtisch()"
+>
+  Abmelden
+</button>
 }
 <h1>Drivers:</h1>
 <table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Region</th>
-        </tr>
-    </thead>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Region</th>
+    </tr>
+  </thead>
 
-    @for (driver of nextStammtisch()?.drivers; track $index) {
-        <tr>
-            <td>{{driver.name}}</td>
-            <td>{{driver.email}}</td>
-            <td>{{driver.region}}</td>
-        </tr>
-        }
+  @for (driver of nextStammtisch()?.drivers; track $index) {
+  <tr>
+    <td>{{ driver.name }}</td>
+    <td>{{ driver.email }}</td>
+    <td>{{ driver.region }}</td>
+  </tr>
+  }
 </table>
-<hr>
+<hr />
 <h1>Participants:</h1>
 <table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Region</th>
-        </tr>
-    </thead>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Region</th>
+    </tr>
+  </thead>
 
-    @for (driver of nextStammtisch()?.participants; track $index) {
-        <tr>
-            <td>{{driver.person.name}}</td>
-            <td>{{driver.person.email}}</td>
-            <td>{{driver.person.region}}</td>
-        </tr>
-        }
+  @for (driver of nextStammtisch()?.participants; track $index) {
+  <tr>
+    <td>{{ driver.person.name }}</td>
+    <td>{{ driver.person.email }}</td>
+    <td>{{ driver.person.region }}</td>
+  </tr>
+  }
 </table>

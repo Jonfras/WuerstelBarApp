@@ -1,10 +1,9 @@
-import { effect, inject, Injectable, OnDestroy, signal } from '@angular/core';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import {
   addDoc,
   collection,
   doc,
   Firestore,
-  getDoc,
   getDocs,
   onSnapshot,
   updateDoc,
@@ -13,6 +12,10 @@ import { StammtischDto } from '../dtos/StammtischDto';
 import { Auth } from '@angular/fire/auth';
 import { PersonDto } from '../dtos/PersonDto';
 import { RegistrationDto } from '../dtos/RegistrationDto';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
+import { Component } from '@angular/core';
+import { firstValueFrom, retry } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +23,7 @@ import { RegistrationDto } from '../dtos/RegistrationDto';
 export class StammtischService implements OnDestroy {
   firestore = inject(Firestore);
   auth = inject(Auth);
+  dialog = inject(MatDialog);
 
   nextStammtisch = signal<StammtischDto | undefined>(undefined);
 
@@ -58,16 +62,40 @@ export class StammtischService implements OnDestroy {
     );
   }
 
-  async createStammtisch() {
-    const date = new Date();
+  async createStammtisch(selectedDate: Date) {
+    if (!selectedDate) {
+      alert('Selected Date cannot be empty');
+      return;
+    }
+
     const stammtischDto: StammtischDto = {
       id: '',
-      date: date,
+      date: selectedDate,
       drivers: [],
       participants: [],
     };
 
     const stammtischeCollection = collection(this.firestore, 'stammtische');
+
+    const querySnapshot = await getDocs(stammtischeCollection);
+    const existingStammtisch = querySnapshot.docs.find((doc) => {
+      const data = doc.data();
+      const dateData = data['date'];
+      const existingDate = dateData
+        ? new Date(dateData.seconds * 1000 + dateData.nanoseconds / 1000000)
+        : new Date();
+      return (
+        existingDate.getFullYear() === selectedDate.getFullYear() &&
+        existingDate.getMonth() === selectedDate.getMonth() &&
+        existingDate.getDate() === selectedDate.getDate()
+      );
+    });
+
+    if (existingStammtisch) {
+      alert('A stammtisch with the same date already exists');
+      return;
+    }
+
     const newDoc = await addDoc(stammtischeCollection, stammtischDto);
     stammtischDto.id = newDoc.id;
     return updateDoc(newDoc, {
@@ -230,11 +258,11 @@ export class StammtischService implements OnDestroy {
     newParticipants: RegistrationDto[]
   ) {
     const sortedDriverRatioMap = this.sortByRatioAndRegistration(
-      filteredDriverRatioMap
-      ,newParticipants
+      filteredDriverRatioMap,
+      newParticipants
     );
     console.table(sortedDriverRatioMap);
-    return sortedDriverRatioMap
+    return sortedDriverRatioMap;
   }
 
   private sortByRatioAndRegistration(
@@ -251,8 +279,8 @@ export class StammtischService implements OnDestroy {
             (p) => p.person.email === b[0]
           );
           return (
-            (new Date(participantB?.registratedAt ?? 0).getTime() || 0)-
-            (new Date(participantA?.registratedAt ?? 0).getTime() || 0)           
+            (new Date(participantB?.registratedAt ?? 0).getTime() || 0) -
+            (new Date(participantA?.registratedAt ?? 0).getTime() || 0)
           );
         }
         return a[1] - b[1];
@@ -264,5 +292,25 @@ export class StammtischService implements OnDestroy {
     const stammtischeCollection = collection(this.firestore, 'stammtische');
     const querySnapshot = await getDocs(stammtischeCollection);
     return querySnapshot.docs.map((doc) => doc.data() as StammtischDto);
+  }
+
+  async showDatePicker(): Promise<Date> {
+    const dialogRef = this.dialog.open(MatDatepicker);
+
+    const result_1 = await firstValueFrom(dialogRef.afterClosed());
+    if (result_1) {
+      return result_1;
+    } else {
+      throw new Error('No date selected');
+    }
+  }
+
+  nextWednesday() {
+    let today = new Date();
+    const nextWednesday = new Date(
+      today.setDate(today.getDate() + ((3 - today.getDay() + 7) % 7 || 7))
+    );
+    nextWednesday.setHours(0, 0, 0, 0);
+    return nextWednesday;
   }
 }

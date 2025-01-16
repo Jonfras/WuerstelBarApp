@@ -1,16 +1,56 @@
-<button type="button" (click)="createEvent()">Create</button>
-<button type="button" (click)="logout()">Logout</button>
-
+<div
+  style="
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  "
+>
+  <div style="display: flex; gap: 10px">
+    <button
+      style="height: 56px"
+      class="btn btn-success"
+      (click)="createEvent()"
+    >
+      Create
+    </button>
+    <mat-form-field>
+      <mat-label>Choose a date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [value]="date.value"
+        (dateChange)="dateChanged($event.value)"
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <button
+    style="height: 56px"
+    type="button"
+    class="btn btn-danger"
+    (click)="logout()"
+  >
+    Logout
+  </button>
+</div>
 <div class="card" (click)="navigateTo('naechsterStammtisch')">
-    <div class="card-header">
-        <small>{{stammtischService.nextStammtisch()?.date | date:'dd.MM.YYYY'}}</small>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">Participants</h5>
-        <ul>
-            @for (item of stammtischService.nextStammtisch()?.participants; track $index) {
-                <li>{{item.person.email}}</li>
-            }
-        </ul>
-    </div>
+  <div class="card-header">
+    <small>Next Stammtisch: {{
+      stammtischService.nextStammtisch()?.date | date : "dd.MM.YYYY"
+    }}</small>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Participants</h5>
+    <ul>
+      @for (item of stammtischService.nextStammtisch()?.participants; track
+      $index) {
+      <li>{{ item.person.email }}</li>
+      }
+    </ul>
+  </div>
 </div>

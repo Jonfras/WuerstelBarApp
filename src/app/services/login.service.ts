@@ -1,37 +1,37 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
-import { Auth, connectAuthEmulator, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
-
-interface User {
-  id: string;
-  email: string | null;
-}
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { PersonDto } from '../dtos/PersonDto';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
- 
-  authService = inject(Auth)
-  user = signal<User | undefined>(undefined);
+  authService = inject(Auth);
+  loggedInUser = signal<PersonDto|undefined>(undefined);
   errorMessage = signal<string>('');
+  router = inject(Router);
 
-  constructor() {
-    effect(() => console.log(`new user logged in ${this.user()}`))
-    // connectAuthEmulator(this.authService, 'http://127.0.0.1:31000')
+  constructor(){
+    effect(() => console.log(this.loggedInUser()));
+    effect(() => {
+      if (!this.loggedInUser()) {
+        this.router.navigateByUrl('login');
+      }
+    })
   }
 
   login(email:string, password:string)  {
     try {
-      console.log(`${email} ${password}`)
-
       signInWithEmailAndPassword(this.authService, email, password)
       .then((userCredential) => {
-          const user: User = {
-            email: userCredential.user.email,
-            id: userCredential.user.uid
+          const user: PersonDto = {
+            email: userCredential.user.email!,
+            id: userCredential.user.uid,
+            name: null,
+            region: null,
           }
-          console.log(`user: ${user.email} ${user.id}`);
-          this.user.set(user)
+          this.loggedInUser.set(user)
       }).catch((error) => {
         console.log(error);
         this.errorMessage.set(error)
@@ -47,12 +47,13 @@ export class LoginService {
       console.log(`${email} ${password}`)
       createUserWithEmailAndPassword(this.authService, email, password)
       .then((userCredential) => {
-        const user: User = {
-          email: userCredential.user.email,
-          id: userCredential.user.uid
+        const user: PersonDto = {
+          email: userCredential.user.email!,
+            id: userCredential.user.uid,
+            name: null,
+            region: null,
         }
-        console.log(`user: ${user.email} ${user.id}`);
-        this.user.set(user)
+        this.loggedInUser.set(user)
       }).catch((error) => {
         console.log(error);
         this.errorMessage.set(error)
@@ -64,6 +65,8 @@ export class LoginService {
   }
 
   logout() {
+    console.log('logging out');
     signOut(this.authService);
+    this.loggedInUser.set(undefined);
   }
 }

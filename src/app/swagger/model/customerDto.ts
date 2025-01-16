@@ -9,9 +9,11 @@
  */
 
 
-export interface OkStatus { 
-    isOk?: boolean;
-    nr?: number;
-    error?: string | null;
+export interface CustomerDto { 
+    id: string;
+    companyName: string;
+    contactName?: string | null;
+    city?: string | null;
+    country?: string | null;
 }
 

@@ -9,9 +9,11 @@
  */
 
 
-export interface OkStatus { 
-    isOk?: boolean;
-    nr?: number;
-    error?: string | null;
+export interface OrderDto { 
+    id: number;
+    nrOrderDetails: number;
+    readonly orderDateMillis: number;
+    readonly requiredDateMillis: number;
+    readonly shippedDateMillis: number;
 }
 

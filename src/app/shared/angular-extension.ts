@@ -9,7 +9,7 @@ export function computedAsync<T>(fct: () => Observable<T>): Signal<T | null> {
     sig.set(null);
     if (subscription && !subscription.closed) subscription.unsubscribe(); //unsubscribe if open
     subscription = fct().subscribe(x => sig.set(x));
-  }, { allowSignalWrites: true });
+  });
 
   return sig;
 }
@@ -22,7 +22,7 @@ export function computedAsyncWithDefault<T>(fct: () => Observable<T>, initialVal
     sig.set(initialValue);
     if (subscription && !subscription.closed) subscription.unsubscribe(); //unsubscribe if open
     subscription = fct().subscribe(x => sig.set(x));
-  }, { allowSignalWrites: true });
+  });
 
   return sig;
 }

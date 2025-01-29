@@ -166,6 +166,25 @@ export class StammtischService implements OnDestroy {
     });
   }
 
+  setDriversManually(person: PersonDto | PersonDto[]) {
+    const nextStammtischId = this.nextStammtisch()?.id;
+
+    if (!nextStammtischId) {
+      throw new Error('No next stammtisch ID available to update');
+    }
+
+    const currentStammtischRef = doc(
+      this.firestore,
+      'stammtische',
+      nextStammtischId
+    );
+
+    updateDoc(currentStammtischRef, {
+      drivers: Array.isArray(person) ? person : [person],
+      participants: this.nextStammtisch()?.participants,
+    });
+  }
+
   isPersonAlreadyParticipating(person: PersonDto | undefined) {
     if (!person) {
       return false;

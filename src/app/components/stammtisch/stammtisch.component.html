@@ -1,56 +1,54 @@
 <button class="btn btn-secondary" style="margin-right: 10px;" (click)="navigateTo()">Back</button>
 @if (!isPersonParticipant()) {
-<button
-  type="button"
-  class="btn btn-success"
-  (click)="addParticipantToCurrentStammtisch()"
->
-  Anmelden
-</button>
+  <button
+    type="button"
+    class="btn btn-success"
+    (click)="addParticipantToCurrentStammtisch()"
+  >
+    Anmelden
+  </button>
 
 } @else {
-<button
-  type="button"
-  class="btn btn-danger"
-  (click)="removeParticipantFromStammtisch()"
->
-  Abmelden
-</button>
+  <button
+    type="button"
+    class="btn btn-danger"
+    (click)="removeParticipantFromStammtisch()"
+  >
+    Abmelden
+  </button>
 }
-<h1>Drivers:</h1>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Region</th>
-    </tr>
-  </thead>
+<div class="d-flex justify-content-between align-items-center mb-3" style="margin: 20px 40px 20px 0px">
+  <h1 class="h4">Participants:</h1>
+  <div class="form-check form-switch">
+    <label class="form-check-label" for="toggleAll">Fahrer Manuell Setzen</label>
+    <input class="form-check-input" type="checkbox" role="switch" id="toggleAll" [(ngModel)]="manualMode">
+  </div>
+</div>
 
-  @for (driver of nextStammtisch()?.drivers; track $index) {
-  <tr>
-    <td>{{ driver.name }}</td>
-    <td>{{ driver.email }}</td>
-    <td>{{ driver.region }}</td>
-  </tr>
-  }
-</table>
-<hr />
-<h1>Participants:</h1>
-<table>
+<table class="custom-table">
   <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Region</th>
-    </tr>
-  </thead>
-
-  @for (driver of nextStammtisch()?.participants; track $index) {
   <tr>
-    <td>{{ driver.person.name }}</td>
-    <td>{{ driver.person.email }}</td>
-    <td>{{ driver.person.region }}</td>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Region</th>
+    <th>Fahrer</th>
   </tr>
-  }
+  </thead>
+  <tbody>
+    @for (driver of tableParticipants; track $index) {
+      <tr>
+        <td>{{ driver.person.name }}</td>
+        <td>{{ driver.person.email }}</td>
+        <td>{{ driver.person.region }}</td>
+        <td class="center">
+          <input type="checkbox" class="fahrer-checkbox" [(ngModel)]="driver.isDriver" [disabled]="!manualMode">
+        </td>
+      </tr>
+    }
+  </tbody>
 </table>
+@if(manualMode) {
+  <div class="d-flex justify-content-end align-items-center mb-3"  style="margin: 20px 40px 20px 0px">
+  <button class="btn btn-primary" (click)="setDriver()">Speichern</button>
+  </div>
+}

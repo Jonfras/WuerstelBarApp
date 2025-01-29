@@ -20,6 +20,14 @@ export class StammtischComponent implements OnInit {
   router = inject(Router);
   manualMode = false;
 
+  allowManualMode = computed(() => {
+    //only allow if you are a driver
+    console.log(this.nextStammtisch()?.drivers);
+    console.log(this.loginService.loggedInUser())
+    console.log(this.nextStammtisch()?.drivers.find((driver) => driver.id === this.loginService.loggedInUser()?.id) !== undefined);
+    return this.nextStammtisch()?.drivers.find((driver) => driver.id === this.loginService.loggedInUser()?.id) !== undefined;
+  });
+
   tableParticipants: { person: PersonDto, isDriver: boolean }[] = [];
 
   nextStammtisch = this.stammtischService.nextStammtisch;

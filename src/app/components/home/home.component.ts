@@ -22,6 +22,8 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { CUSTOM_DATE_FORMATS } from '../../constants/custom-date-formats';
 import { FormControl } from '@angular/forms';
 import { MatButton, MatButtonModule } from '@angular/material/button';
+import {StammtischDto} from "../../dtos/StammtischDto";
+import {PersonDto} from "../../dtos/PersonDto";
 
 @Component({
   selector: 'app-home',
@@ -71,6 +73,14 @@ export class HomeComponent implements OnInit {
 
   navigateTo(uri: string) {
     this.router.navigateByUrl(uri);
+  }
+
+  convertToDate(date: Date) {
+    return new Date(date);
+  }
+
+  isDiver(stammtisch: StammtischDto, driver: PersonDto) {
+    return stammtisch.drivers.some(x => x.id === driver.id);
   }
 
   logout() {

@@ -41,12 +41,9 @@ export class StammtischComponent implements OnInit {
     this.tableParticipants = [];
     const drivers = this.nextStammtisch()?.drivers;
     this.nextStammtisch()?.participants.forEach((participant) => {
-      console.log(participant);
-      console.log(drivers);
-      console.log(drivers?.find((driver) => driver.id === participant.person.id) !== undefined)
       this.tableParticipants.push({
         person: participant.person,
-        isDriver: drivers?.find((driver) => driver.id === participant.person.id) !== undefined
+        isDriver: drivers?.some((driver) => driver.id === participant.person.id) ?? false,
       });
     });
   });

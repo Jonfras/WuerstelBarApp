@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {Component, effect, inject, OnInit, signal} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LoginService } from '../../services/login.service';
 import { Router } from '@angular/router';
@@ -8,8 +8,9 @@ import { Router } from '@angular/router';
   imports: [FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  standalone: true
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginService = inject(LoginService);
   router = inject(Router);
 
@@ -25,8 +26,8 @@ export class LoginComponent {
     this.loginService.resetMessage();
   }
 
-  register() {
-    this.loginService.createNewAccount(this.email(), this.password());
+  ngOnInit(): void {
+    this.loginService.autoLogin();
   }
 
   login() {

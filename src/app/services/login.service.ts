@@ -1,70 +1,49 @@
-import { effect, inject, Injectable, signal } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
-import { PersonDto } from '../dtos/PersonDto';
-import { Router } from '@angular/router';
+import {effect, inject, Injectable, signal} from '@angular/core';
+import {Auth, signInWithCustomToken, signInWithEmailAndPassword, signOut} from '@angular/fire/auth';
+import {PersonDto} from '../dtos/PersonDto';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
   authService = inject(Auth);
-  loggedInUser = signal<PersonDto|undefined>(undefined);
+  loggedInUser = signal<PersonDto | undefined>(undefined);
   errorMessage = signal<string>('');
   router = inject(Router);
 
-  constructor(){
+  credentials = '';
+
+  constructor() {
     effect(() => console.log(this.loggedInUser()));
     effect(() => {
       if (!this.loggedInUser()) {
         this.router.navigateByUrl('login');
       }
-    })
+    });
   }
 
   resetMessage() {
     this.errorMessage.set('');
   }
 
-  login(email:string, password:string)  {
-    try {
-      signInWithEmailAndPassword(this.authService, email, password)
+  login(email: string, password: string) {
+    signInWithEmailAndPassword(this.authService, email, password)
       .then((userCredential) => {
-          const user: PersonDto = {
-            email: userCredential.user.email!,
-            id: userCredential.user.uid,
-            name: null,
-            region: null,
-          }
-          this.loggedInUser.set(user)
-      }).catch((error) => {
+        this.loggedInUser.set(this.createPersonDto(userCredential));
+        localStorage.setItem('credentials', JSON.stringify({email, password, lastLogin: new Date()}));
+      })
+      .catch((error) => {
         console.log(error);
         this.errorMessage.set(error)
       });
-
-    } catch {
-      console.log(`error logging in as: ${email}`);
-    }
   }
 
-  createNewAccount(email:string, password:string)  {
-    try {
-      console.log(`${email} ${password}`)
-      createUserWithEmailAndPassword(this.authService, email, password)
-      .then((userCredential) => {
-        const user: PersonDto = {
-          email: userCredential.user.email!,
-            id: userCredential.user.uid,
-            name: null,
-            region: null,
-        }
-        this.loggedInUser.set(user)
-      }).catch((error) => {
-        console.log(error);
-        this.errorMessage.set(error)
-      });
-
-    } catch {
-      console.log(`error logging in as: ${email}`);
+  autoLogin() {
+    const credentials = localStorage.getItem('credentials');
+    if (credentials && new Date(JSON.parse(credentials).lastLogin).getTime() > new Date().getTime() - 1000 * 60 * 60 * 24) {
+      const {email, password} = JSON.parse(credentials);
+      this.login(email, password);
     }
   }
 
@@ -72,5 +51,14 @@ export class LoginService {
     console.log('logging out');
     signOut(this.authService);
     this.loggedInUser.set(undefined);
+  }
+
+  createPersonDto(credentials: any): PersonDto {
+    return {
+      email: credentials.user.email,
+      id: credentials.user.uid,
+      name: null,
+      region: null,
+    };
   }
 }

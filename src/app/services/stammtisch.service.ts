@@ -26,6 +26,7 @@ export class StammtischService implements OnDestroy {
   dialog = inject(MatDialog);
 
   nextStammtisch = signal<StammtischDto | undefined>(undefined);
+  allStammtische = signal<StammtischDto[] | undefined>(undefined);
 
   unsubscribe;
 
@@ -55,6 +56,7 @@ export class StammtischService implements OnDestroy {
             return stammtisch;
           })
           .sort((a, b) => b.date.getTime() - a.date.getTime());
+        this.allStammtische.set(stammtische);
         this.nextStammtisch.set(
           stammtische.length > 0 ? stammtische[0] : undefined
         );

@@ -38,19 +38,41 @@
     Logout
   </button>
 </div>
-<div class="card" (click)="navigateTo('naechsterStammtisch')">
-  <div class="card-header">
-    <small>Next Stammtisch: {{
-      stammtischService.nextStammtisch()?.date | date : "dd.MM.YYYY"
-    }}</small>
+<div style="display: flex; flex-direction: column; height: 80vh;">
+  <!-- First Card (takes only the space it needs) -->
+  <div class="card" (click)="navigateTo('naechsterStammtisch')">
+    <div class="card-header">
+      <small>Nächster Stammtisch: {{
+          stammtischService.nextStammtisch()?.date | date : "dd.MM.YYYY"
+        }}</small>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Teilnehmer</h5>
+      <ul>
+        @for (item of stammtischService.nextStammtisch()?.participants; track $index) {
+          <li>{{ item.person.email }}</li>
+        }
+      </ul>
+    </div>
   </div>
-  <div class="card-body">
-    <h5 class="card-title">Participants</h5>
-    <ul>
-      @for (item of stammtischService.nextStammtisch()?.participants; track
-      $index) {
-      <li>{{ item.person.email }}</li>
-      }
-    </ul>
+  <hr>
+  <h2 style="margin-top: 20px;">Vorherige Stammtische</h2>
+  <!-- Scrollable List of Stammtische (takes remaining space) -->
+  <div style="flex: 1; overflow: auto; width: 100%;">
+    @for (stammtisch of stammtischService.allStammtische()?.skip(1); track $index) {
+      <div class="card" style="margin-top: 20px;">
+        <div class="card-header">
+          <small>Stammtisch am: {{ stammtisch.date | date : "dd.MM.YYYY" }}</small>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Teilnehmer</h5>
+          <ul>
+            @for (item of stammtisch.participants; track $index) {
+              <li [style.text-decoration]="isDiver(stammtisch, item.person) ? 'underline' : 'none'">{{ item.person.email }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
   </div>
 </div>
